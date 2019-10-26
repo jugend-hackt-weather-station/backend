@@ -5,7 +5,7 @@ module.exports.create = sequelize => {
   class Entry extends Sequelize.Model {}
   Entry.init(
     {
-      altitude: {
+      longitude: {
         type: DataTypes.DECIMAL(9, 6)
       },
       latitude: {

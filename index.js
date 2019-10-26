@@ -6,6 +6,14 @@ const entry = require("./model/entry.js");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 const dbOptions = {
   name: "weatherstation",
@@ -39,7 +47,7 @@ sequelize
   });
 
 const HOST = "localhost";
-const PORT = 8080;
+const PORT = 5000;
 
 app.get("/", (req, res) => {
   res.send("Hey!");
@@ -63,6 +71,18 @@ app.post("/submit", async (req, res) => {
       return res.sendStatus(200);
     })
     .catch(e => console.log(e));
+});
+
+app.post("/submitAll", async (req, res) => {
+  for (let entry of req.body) {
+    Entry.create({ ...entry }).catch(e => console.log(e));
+  }
+  return res.sendStatus(200);
+});
+
+app.get("/mockup", (req, res) => {
+  Entry.drop();
+  return res.sendStatus(200);
 });
 
 app.listen(PORT, HOST);
